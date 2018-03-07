@@ -1,3 +1,5 @@
+//package joeyVersion;
+
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -9,6 +11,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+// import java.util.ArrayList;
 
 public class OceanExplorer extends Application {
 
@@ -28,7 +31,8 @@ public class OceanExplorer extends Application {
 	OceanMap oceanMap;
 	Scene scene;
 	Ship ship;
-	PirateShip pirateship;
+	PirateShips pirateShips;
+	// ArrayList<Movement> moveables;
 
 	@Override
 	public void start(Stage mapStage) throws Exception {
@@ -43,9 +47,9 @@ public class OceanExplorer extends Application {
 		drawMap();
 
 		ship = new Ship(oceanMap);
-		pirateship = new PirateShip(oceanMap);
+		pirateShips = new PirateShips(oceanMap);
 		loadShipImage();
-		ship.addObserver(pirateship);
+		ship.addObserver(pirateShips);
 
 		scene = new Scene(root, 1000, 1000);
 		mapStage.setTitle("Christopher Columbus Sails the Ocean Blue");
@@ -61,6 +65,7 @@ public class OceanExplorer extends Application {
 		shipImageView.setX(oceanMap.getShipLocation().x * scale);
 		shipImageView.setY(oceanMap.getShipLocation().y * scale);
 		root.getChildren().add(shipImageView);
+		// moveables.add(ship);
 
 		// Load the pirate's islands
 /*		Image pirateLand = new Image("pirateIsland.png", 50, 50, true, true);
@@ -91,11 +96,11 @@ public class OceanExplorer extends Application {
 
 	private void startSailing() {
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-
-			@Override
+			
 			public void handle(KeyEvent ke) {
 				switch (ke.getCode()) {
 				case RIGHT:
+					// if (ship.getShipLocation().x < oceanMap.getDimensions() )
 					ship.goEast();
 					break;
 				case LEFT:
@@ -113,8 +118,9 @@ public class OceanExplorer extends Application {
 				shipImageView.setX(ship.getShipLocation().x * scale);
 				shipImageView.setY(ship.getShipLocation().y * scale);
 				for (int i = 0; i < oceanMap.getPirates().length; i++) {
-					pirateImageView[i].setX(pirateship.getShipLocation()[i].x * scale);
-					pirateImageView[i].setY(pirateship.getShipLocation()[i].y * scale);
+					pirateImageView[i].setX(pirateShips.getShipLocation()[i].x * scale);
+					pirateImageView[i].setY(pirateShips.getShipLocation()[i].y * scale);
+					System.out.println(pirateShips.getShipLocation()[i].toString()); // debug
 				}
 			}
 		});
@@ -134,6 +140,8 @@ public class OceanExplorer extends Application {
 			}
 		}
 	}
+	
+	
 
 	public static void main(String[] args) {
 		launch(args);

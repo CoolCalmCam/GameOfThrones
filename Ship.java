@@ -1,8 +1,9 @@
+//package joeyVersion;
+
 import java.awt.Point;
 import java.util.Observable;
 
-
-public class Ship extends Observable {
+public class Ship extends Observable implements Movement {
     Point currentLocation;
     OceanMap oceanMap;
     
@@ -15,7 +16,7 @@ public class Ship extends Observable {
     	return currentLocation;
     }
     
-    public void goEast(){
+    public void goEast() {
     	if(currentLocation.x<oceanMap.getDimensions()-1 && oceanMap.isOcean(currentLocation.x+1, currentLocation.y)){
     		currentLocation.x++;
     		setChanged();
@@ -23,7 +24,7 @@ public class Ship extends Observable {
     	}
     }
     
-    public void goWest(){
+    public void goWest() {
     	if(currentLocation.x >0 && oceanMap.isOcean(currentLocation.x-1, currentLocation.y)){
     		currentLocation.x--;
     		setChanged();
@@ -31,7 +32,7 @@ public class Ship extends Observable {
     	}
     }
     
-    public void goNorth(){
+    public void goNorth() {
     	if(currentLocation.y>0 && oceanMap.isOcean(currentLocation.x, currentLocation.y-1)){
     		currentLocation.y--;
     		setChanged();
@@ -39,7 +40,7 @@ public class Ship extends Observable {
     	}
     }
     
-    public void goSouth(){
+    public void goSouth() {
     	if(currentLocation.y<oceanMap.getDimensions()-1 && oceanMap.isOcean(currentLocation.x, currentLocation.y+1)){
     		currentLocation.y++;
     		setChanged();
@@ -49,6 +50,3 @@ public class Ship extends Observable {
 
 	
 }
-
-
-
