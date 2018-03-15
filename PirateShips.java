@@ -19,22 +19,22 @@ public class PirateShips implements Observer {
 	}
 
 	public void goEast(Point p) {
-		if (p.x < oceanMap.getDimensions() && oceanMap.isOcean(p.x + 1, p.y))
+		if (p.x < oceanMap.getDimensions() && !oceanMap.isOccupied(p.x + 1, p.y))
 			p.x++;
 	}
 
 	public void goWest(Point p) {
-		if (p.x > 0 && oceanMap.isOcean(p.x - 1, p.y))
+		if (p.x > 0 && !oceanMap.isOccupied(p.x - 1, p.y))
 			p.x--;
 	}
 
 	public void goNorth(Point p) {
-		if (p.y > 0 && oceanMap.isOcean(p.x, p.y - 1))
+		if (p.y > 0 && !oceanMap.isOccupied(p.x, p.y - 1))
 			p.y--;
 	}
 
 	public void goSouth(Point p) {
-		if (p.y < oceanMap.getDimensions() && oceanMap.isOcean(p.x, p.y + 1))
+		if (p.y < oceanMap.getDimensions() && !oceanMap.isOccupied(p.x, p.y + 1))
 			p.y++;
 	}
 
@@ -46,32 +46,32 @@ public class PirateShips implements Observer {
 			for (Point p : currentLocation) {
 				boolean hasMoved = false;
 				if (p.x < shipLocation.x && !hasMoved) {
-					if (p.x < oceanMap.getDimensions() && oceanMap.isOcean(p.x + 1, p.y)) {
+					if (p.x < oceanMap.getDimensions() && !oceanMap.isOccupied(p.x + 1, p.y)) {
 						goEast(p);
 						hasMoved = true;
 					}
 				}
 				if (p.x > shipLocation.x && !hasMoved) {
-					if (p.x > 0 && oceanMap.isOcean(p.x - 1, p.y)) {
+					if (p.x > 0 && !oceanMap.isOccupied(p.x - 1, p.y)) {
 						goWest(p);
 						hasMoved = true;
 					}
 				}
 				if (p.y > shipLocation.y && !hasMoved) {
-					if (p.y > 0 && oceanMap.isOcean(p.x, p.y - 1)) {
+					if (p.y > 0 && !oceanMap.isOccupied(p.x, p.y - 1)) {
 						goNorth(p);
 						hasMoved = true;
 					}
 				}
 				if (p.y < shipLocation.y && !hasMoved) {
-					if (p.y < oceanMap.getDimensions() && oceanMap.isOcean(p.x, p.y + 1)) {
+					if (p.y < oceanMap.getDimensions() && !oceanMap.isIsland(p.x, p.y + 1)) {
 						goSouth(p);
 						hasMoved = true;
 					}
 				}
-				System.out.println(p.toString()); // debug
+				// System.out.println(p.toString()); // debug
 			}
-			System.out.println(); // debug
+			// System.out.println(); // debug
 		}
 	}
 }

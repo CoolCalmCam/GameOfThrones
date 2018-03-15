@@ -2,7 +2,7 @@ import java.awt.Point;
 import java.util.Observable;
 import java.util.Observer;
 
-// does not currently activate lose conditions
+// Works now I think!
 
 public class DoubleSpeed implements Observer {
 	Point currentLocation;
@@ -19,25 +19,25 @@ public class DoubleSpeed implements Observer {
 	}
 
 	public void goNorth(Point p) {
-		if (p.y > 0 && oceanMap.isOcean(p.x, p.y - 1)) {
+		if (p.y > 0 && !oceanMap.isIsland(p.x, p.y - 1)) {
 			p.y -= 2;
 		}
 	}
 
 	public void goEast(Point p) {
-		if (p.x < 9 && oceanMap.isOcean(p.x + 1, p.y)) {
+		if (p.x < 9 && !oceanMap.isIsland(p.x + 1, p.y)) {
 			p.x += 2;
 		}
 	}
 
 	public void goWest(Point p) {
-		if (p.x > 0 && oceanMap.isOcean(p.x - 1, p.y)) {
+		if (p.x > 0 && !oceanMap.isIsland(p.x - 1, p.y)) {
 			p.x -= 2;
 		}
 	}
 
 	public void goSouth(Point p) {
-		if (p.y < 9 && oceanMap.isOcean(p.x, p.y + 1)) {
+		if (p.y < 9 && !oceanMap.isIsland(p.x, p.y + 1)) {
 			p.y += 2;
 		}
 	}
@@ -46,25 +46,25 @@ public class DoubleSpeed implements Observer {
 		if (arg0 instanceof Ship) {
 			shipLocation = ((Ship) arg0).getShipLocation();
 			if (shipLocation.x < currentLocation.x) {
-				if (currentLocation.x > 0 && oceanMap.isOcean(currentLocation.x - 2, currentLocation.y)) {
+				if (currentLocation.x > 0 && !oceanMap.isIsland(currentLocation.x - 2, currentLocation.y)) {
 					goWest(currentLocation);
 				}
 			}
 			if (shipLocation.y > currentLocation.y) {
 				if (currentLocation.y < oceanMap.getDimensions()
-						&& oceanMap.isOcean(currentLocation.x, currentLocation.y + 2)) {
+						&& !oceanMap.isIsland(currentLocation.x, currentLocation.y + 2)) {
 					goSouth(currentLocation);
 				}
 
 			}
 			if (shipLocation.y < currentLocation.y) {
-				if (currentLocation.y > 0 && oceanMap.isOcean(currentLocation.x, currentLocation.y - 2)) {
+				if (currentLocation.y > 0 && !oceanMap.isIsland(currentLocation.x, currentLocation.y - 2)) {
 					goNorth(currentLocation);
 				}
 			}
 			if (shipLocation.x > currentLocation.x) {
 				if (currentLocation.x < oceanMap.getDimensions()
-						&& oceanMap.isOcean(currentLocation.x + 2, currentLocation.y)) {
+						&& !oceanMap.isIsland(currentLocation.x + 2, currentLocation.y)) {
 					goEast(currentLocation);
 				}
 			}

@@ -23,33 +23,23 @@ import javafx.stage.Stage;
 
 public class OceanExplorer extends Application {
 	
-	boolean[][] islandMap;
+	int[][] islandMap;
 	Pane root;
 	final int dimensions = 20;
 	final int islandCount = 20;
 	final int scale = 50;
 	boolean GameOver = false;
 	Text WText, LText;
-	Image shipImage;
-	Image pirateImage;
-	Image islandImage;
-	Image pirateLand;
-	Image sharkImage;
-	Image pirate2Image;
-	Image treasureImage;
+	Image shipImage, pirateImage, islandImage, pirateLand, sharkImage, pirate2Image, treasureImage;
 
-	ImageView treasureImageView;
-	ImageView pirate2ImageView;
-	ImageView shipImageView;
-	ImageView[] pirateImageView;
-	ImageView[] islandImageView;
-	ImageView sharkImageView;
+	ImageView treasureImageView, pirate2ImageView, shipImageView, sharkImageView;
+	ImageView[] pirateImageView, islandImageView;
 
 	OceanMap oceanMap;
 	Scene scene;
 	Ship ship;
 	PirateShips pirateShips;
-	littleShark shark;
+	LittleShark shark;
 	DoubleSpeed doubleSpeed;
 	Stage classStage;
 	// ArrayList<Movement> moveables;
@@ -67,7 +57,7 @@ public class OceanExplorer extends Application {
 		
 		ship = new Ship(oceanMap);
 		pirateShips = new PirateShips(oceanMap);
-		shark = new littleShark(oceanMap);
+		shark = new LittleShark(oceanMap);
 		doubleSpeed = new DoubleSpeed(oceanMap);
 		loadShipImage();
 		ship.addObserver(pirateShips);
@@ -193,7 +183,7 @@ public class OceanExplorer extends Application {
 			for (int y = 0; y < dimensions; y++) {
 				Rectangle rect = new Rectangle(x * scale, y * scale, scale, scale);
 				rect.setStroke(Color.BLACK);
-				rect.setFill(Color.GREEN);
+				rect.setFill(Color.PALETURQUOISE);
 				root.getChildren().add(rect);
 			}
 		}
@@ -206,17 +196,17 @@ public class OceanExplorer extends Application {
 	}
 	
 	public void gg() {
-		if (oceanMap.checkW() == true) {
+		if (oceanMap.checkW()) {
 			Object[] options = {"Quit","Retry"};
 			Component frame = null;
-			int result = JOptionPane.showOptionDialog(frame,  "You Won!", "Winner Diaglog Message",JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,options, frame);
+			int result = JOptionPane.showOptionDialog(frame,  "You Won!", "Winner Dialog Message",JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,options, frame);
 			if (result == 0) System.exit(0);
 			if (result == 1) restart(); 
-	}
-		if (oceanMap.checkL() == false) {
+		}
+		if (!oceanMap.checkL()) {
 			Object[] options = {"Quit","Retry"};
 			Component frame = null;
-			int result = JOptionPane.showOptionDialog(frame,  "You lost!", "Loser Diaglog Message",JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,options, frame);
+			int result = JOptionPane.showOptionDialog(frame,  "You lost!", "Loser Dialog Message",JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,options, frame);
 			if (result == 0) System.exit(0); 
 			if (result == 1) restart(); 
 		} 

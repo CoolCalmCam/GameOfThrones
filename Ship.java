@@ -10,12 +10,12 @@ public class Ship extends Observable implements Movement {
     	currentLocation = oceanMap.getShipLocation();
     }
     
-    public Point getShipLocation(){
+    public Point getShipLocation() {
     	return currentLocation;
     }
     
     public void goEast() {
-    	if(currentLocation.x<oceanMap.getDimensions()-1 && oceanMap.isOcean(currentLocation.x+1, currentLocation.y)){
+    	if(currentLocation.x<oceanMap.getDimensions()-1 && !oceanMap.isIsland(currentLocation.x+1, currentLocation.y)){
     		currentLocation.x++;
     		setChanged();
     		notifyObservers(currentLocation);
@@ -23,7 +23,7 @@ public class Ship extends Observable implements Movement {
     }
     
     public void goWest() {
-    	if(currentLocation.x >0 && oceanMap.isOcean(currentLocation.x-1, currentLocation.y)){
+    	if(currentLocation.x >0 && !oceanMap.isIsland(currentLocation.x-1, currentLocation.y)){
     		currentLocation.x--;
     		setChanged();
     		notifyObservers(currentLocation);
@@ -31,7 +31,7 @@ public class Ship extends Observable implements Movement {
     }
     
     public void goNorth() {
-    	if(currentLocation.y>0 && oceanMap.isOcean(currentLocation.x, currentLocation.y-1)){
+    	if(currentLocation.y>0 && !oceanMap.isIsland(currentLocation.x, currentLocation.y-1)){
     		currentLocation.y--;
     		setChanged();
     		notifyObservers(currentLocation);
@@ -39,12 +39,11 @@ public class Ship extends Observable implements Movement {
     }
     
     public void goSouth() {
-    	if(currentLocation.y<oceanMap.getDimensions()-1 && oceanMap.isOcean(currentLocation.x, currentLocation.y+1)){
+    	if(currentLocation.y<oceanMap.getDimensions()-1 && !oceanMap.isIsland(currentLocation.x, currentLocation.y+1)){
     		currentLocation.y++;
     		setChanged();
     		notifyObservers(currentLocation);
     	}
     }
 
-	
 }

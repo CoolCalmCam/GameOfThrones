@@ -8,7 +8,7 @@ public class OceanMap {
 	final static int pirates = 2;
 	private static OceanMap oceanMap_instance = null;
 	
-	boolean[][] grid;
+	int[][] grid;
 	int dimensions;
 	int islandCount;
 	Random rand = new Random();
@@ -48,13 +48,13 @@ public class OceanMap {
 
 	// Create an empty map
 	private void createGrid() {
-		grid = new boolean[dimensions][dimensions];
-		for (int x = 0; x < dimensions; x++)
+		grid = new int[dimensions][dimensions];
+		/* for (int x = 0; x < dimensions; x++)
 			for (int y = 0; y < dimensions; y++)
-				grid[x][y] = false;
+				grid[x][y] = false; */
 	}
 	public void retry() {
-		//placeIslands();
+		placeIslands();
 		placePirate();
 		placeShark();
 		placeDoubleS();
@@ -62,36 +62,38 @@ public class OceanMap {
 		placeShip();
 	}
 
-	// Place islands onto map
+	// Place islands onto map; islands are represented by 1
 	private void placeIslands() {
 		int islandsToPlace = islandCount;
 		int count = 0;
 		while (islandsToPlace > 0) {
 			int x = rand.nextInt(dimensions);
 			int y = rand.nextInt(dimensions);
-			if (!grid[x][y]) {
-				grid[x][y] = true;
+			if (grid[x][y] < 1) {
+				grid[x][y] = 1;
 				islandsToPlace--;
-				islands[count] = new Point(x, y);
+				islands[count] = new Point(x,y);
 				count++;
 			}
 		}
 	}
-
+	
+	// Places the player's Ship onto map; player's ship represented by 2
 	private void placeShip() {
 		boolean placedShip = false;
 		int x = 0, y = 0;
 		while (!placedShip) {
 			x = rand.nextInt(dimensions);
 			y = rand.nextInt(dimensions);
-			if (!grid[x][y]) {
+			if (grid[x][y] < 1) {
 				placedShip = true;
 				shipLocation = new Point(x,y);
-				grid[x][y] =true;
+				grid[x][y] = 2;
 			}
 		}
 	}
-
+	
+	// Places a LittleShark onto map; LittleShark represented by 3
 	private void placeShark() {
 		boolean placedShark = false;
 		int x = 0;
@@ -99,14 +101,15 @@ public class OceanMap {
 		while (!placedShark) {
 			x = rand.nextInt(dimensions);
 			y = rand.nextInt(dimensions);
-			if (!grid[x][y]) {
-				grid[x][y] = true;
+			if (grid[x][y] < 1) {
+				grid[x][y] = 3;
 				sharkLocation = new Point(x, y);
 				placedShark = true;
 			}
 		}
 	}
-
+	
+	// Places the Treasure on the map; Treasure represented by 4
 	private void placeTreasure() {
 		boolean placedTreasure = false;
 		int x = 0;
@@ -114,14 +117,15 @@ public class OceanMap {
 		while (!placedTreasure) {
 			x = rand.nextInt(dimensions);
 			y = rand.nextInt(dimensions);
-			if (!grid[x][y]) {
-				//grid[x][y] = true;
+			if (grid[x][y] < 1) {
+				grid[x][y] = 4;
 				treasureLocation = new Point(x, y);
 				placedTreasure = true;
 			}
 		}
 	}
-
+	
+	// Places the DoubleSpeed ship on the map; DoubleSpeed represented by 5
 	private void placeDoubleS() {
 		boolean placedDouble = false;
 		int x = 0;
@@ -129,25 +133,24 @@ public class OceanMap {
 		while (!placedDouble) {
 			x = rand.nextInt(dimensions);
 			y = rand.nextInt(dimensions);
-			if (!grid[x][y]) {
-				grid[x][y] = true;
-
+			if (grid[x][y] < 1) {
+				grid[x][y] = 5;
 				DoubleLocation = new Point(x, y);
 				placedDouble = true;
 			}
 		}
 	}
-
+	
+	// Places the PirateShips on the map; PirateShips represented by 6
 	private void placePirate() {
 		int x = 0, y = 0;
 		int count = 0;
 		while (count < pirates) {
 			x = rand.nextInt(dimensions);
 			y = rand.nextInt(dimensions);
-			if (!grid[x][y]) {
-				grid[x][y] = true;
-
-				pirate[count] = new Point(x, y);
+			if (grid[x][y] < 1) {
+				grid[x][y] = 6;
+				pirate[count] = new Point(x,y);
 				count++;
 			}
 		}
@@ -178,7 +181,7 @@ public class OceanMap {
 	}
 
 	// Return generated map
-	public boolean[][] getMap() {
+	public int[][] getMap() {
 		return grid;
 	}
 
@@ -186,17 +189,34 @@ public class OceanMap {
 		return dimensions;
 	}
 
-	public boolean isOcean(int x, int y) {
+	/* public boolean isOcean(int x, int y) {
 		if (x >= 0 && x < dimensions && y >= 0 && y < dimensions) {
 			if (!grid[x][y])
 				return true;
 			return false;
 		}
 		return false;
+	} */
+	
+	public boolean isIsland(int x, int y) {
+		if (x >= 0 && x < dimensions && y >= 0 && y < dimensions)
+			if (grid[x][y] == 1)
+				return true;
+		return false;
+	}
+	
+	public boolean isOccupied(int x, int y) {
+		if (x >= 0 && x < dimensions && y >= 0 && y < dimensions)
+			if (grid[x][y] > 2 || grid[x][y] == 1)
+				return true;
+		return false;
 	}
 
 	public boolean checkL() {
 		if (getSharkLocation().equals(getShipLocation())) {
+			return false;
+		}
+		if (getDoubleSpeed().equals(getShipLocation())) {
 			return false;
 		}
 		for (int i = 0; i < 2; i++) {
@@ -208,10 +228,9 @@ public class OceanMap {
 	}
 
 	public boolean checkW() {
-		if (getShipLocation().equals(getTreasureLocation())) {
+		if (getShipLocation().equals(getTreasureLocation()))
 			return true;
-		}else {
+		else
 			return false;
 	}
-		}
 }
