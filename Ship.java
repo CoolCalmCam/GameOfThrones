@@ -1,5 +1,3 @@
-//package joeyVersion;
-
 import java.awt.Point;
 import java.util.Observable;
 

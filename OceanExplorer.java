@@ -1,9 +1,17 @@
-//package joeyVersion;
-
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import java.awt.Component;
+import javax.swing.JOptionPane;
 import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -14,48 +22,68 @@ import javafx.stage.Stage;
 // import java.util.ArrayList;
 
 public class OceanExplorer extends Application {
-
+	
 	boolean[][] islandMap;
 	Pane root;
 	final int dimensions = 20;
 	final int islandCount = 20;
 	final int scale = 50;
+	boolean GameOver = false;
+	Text WText, LText;
 	Image shipImage;
 	Image pirateImage;
 	Image islandImage;
 	Image pirateLand;
+	Image sharkImage;
+	Image pirate2Image;
+	Image treasureImage;
+
+	ImageView treasureImageView;
+	ImageView pirate2ImageView;
 	ImageView shipImageView;
 	ImageView[] pirateImageView;
 	ImageView[] islandImageView;
-	//ImageView[] pirateLandView;
+	ImageView sharkImageView;
+
 	OceanMap oceanMap;
 	Scene scene;
 	Ship ship;
 	PirateShips pirateShips;
+	littleShark shark;
+	DoubleSpeed doubleSpeed;
+	Stage classStage;
 	// ArrayList<Movement> moveables;
 
-	@Override
-	public void start(Stage mapStage) throws Exception {
-
-		oceanMap = new OceanMap(dimensions, islandCount);
+	void startGame(Stage mapStage) {
+		oceanMap = OceanMap.createOceanMapInstance(dimensions, islandCount); // for Singleton
 		islandMap = oceanMap.getMap(); // Note: We will revisit this in a future class and use an iterator instead of
 										// exposing the underlying representation!!!
 		islandImageView = new ImageView[oceanMap.getIslands().length];
 		pirateImageView = new ImageView[oceanMap.getPirates().length];
-		//pirateLandView = new ImageView[oceanMap.getPirates().length];
 		root = new AnchorPane();
 		drawMap();
+		classStage = mapStage;
 
+		
 		ship = new Ship(oceanMap);
 		pirateShips = new PirateShips(oceanMap);
+		shark = new littleShark(oceanMap);
+		doubleSpeed = new DoubleSpeed(oceanMap);
 		loadShipImage();
 		ship.addObserver(pirateShips);
-
-		scene = new Scene(root, 1000, 1000);
+		ship.addObserver(shark);
+		ship.addObserver(doubleSpeed);
+		scene = new Scene(root, 1200, 1000);
 		mapStage.setTitle("Christopher Columbus Sails the Ocean Blue");
 		mapStage.setScene(scene);
 		mapStage.show();
 		startSailing();
+		buttons();
+	}
+	@Override
+	public void start(Stage mapStage) throws Exception {
+		startGame(mapStage);
+
 	}
 
 	private void loadShipImage() {
@@ -67,14 +95,26 @@ public class OceanExplorer extends Application {
 		root.getChildren().add(shipImageView);
 		// moveables.add(ship);
 
-		// Load the pirate's islands
-/*		Image pirateLand = new Image("pirateIsland.png", 50, 50, true, true);
-		for (int i = 0; i < oceanMap.getPirates().length; i++) {
-			pirateLandView[i] = new ImageView(pirateLand);
-			pirateLandView[i].setX(oceanMap.getPirates()[i].x * scale);
-			pirateLandView[i].setY(oceanMap.getPirates()[i].y * scale);
-			root.getChildren().add(pirateLandView[i]);
-		}*/
+		// Load the treasure Image
+		Image treasureImage = new Image("treasure.png", 50, 50, true, true);
+		treasureImageView = new ImageView(treasureImage);
+		treasureImageView.setX(oceanMap.getTreasureLocation().x * scale);
+		treasureImageView.setY(oceanMap.getTreasureLocation().y * scale);
+		root.getChildren().add(treasureImageView);
+
+		// Load the shark image
+		Image sharkImage = new Image("LittleShark.jpg", 50, 50, true, true);
+		sharkImageView = new ImageView(sharkImage);
+		sharkImageView.setX(oceanMap.getSharkLocation().x * scale);
+		sharkImageView.setY(oceanMap.getSharkLocation().y * scale);
+		root.getChildren().add(sharkImageView);
+
+		// Load the double speed ship
+		Image pirate2Image = new Image("doubleS.png", 50, 50, true, true);
+		pirate2ImageView = new ImageView(pirate2Image);
+		pirate2ImageView.setX(oceanMap.getDoubleSpeed().x * scale);
+		pirate2ImageView.setY(oceanMap.getDoubleSpeed().y * scale);
+		root.getChildren().add(pirate2ImageView);
 
 		// Load the pirate ships
 		Image pirateImage = new Image("pirateShip.png", 50, 50, true, true);
@@ -93,14 +133,27 @@ public class OceanExplorer extends Application {
 			root.getChildren().add(islandImageView[i]);
 		}
 	}
+	private void buttons() {
+		Button reset = new Button("ReSet the game");
+		reset.setLayoutY(0);
+		reset.setLayoutX(1000);
+		reset.setOnAction(new EventHandler<ActionEvent>() {
+		    @Override 
+		    public void handle(ActionEvent e) {
+		        reset.setText("reset");
+		        classStage.close();
+		        restart();
+		    }
+		});
+		root.getChildren().add(reset);
+	}
 
 	private void startSailing() {
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
-			
+
 			public void handle(KeyEvent ke) {
 				switch (ke.getCode()) {
 				case RIGHT:
-					// if (ship.getShipLocation().x < oceanMap.getDimensions() )
 					ship.goEast();
 					break;
 				case LEFT:
@@ -120,7 +173,15 @@ public class OceanExplorer extends Application {
 				for (int i = 0; i < oceanMap.getPirates().length; i++) {
 					pirateImageView[i].setX(pirateShips.getShipLocation()[i].x * scale);
 					pirateImageView[i].setY(pirateShips.getShipLocation()[i].y * scale);
-					System.out.println(pirateShips.getShipLocation()[i].toString()); // debug
+
+				}
+				sharkImageView.setX(shark.getLittleShark().x * scale);
+				sharkImageView.setY(shark.getLittleShark().y * scale);
+
+				pirate2ImageView.setX(doubleSpeed.getDoubleSS().x * scale);
+				pirate2ImageView.setY(doubleSpeed.getDoubleSS().y * scale);
+				if (GameOver == false) {
+					gg();
 				}
 			}
 		});
@@ -132,16 +193,34 @@ public class OceanExplorer extends Application {
 			for (int y = 0; y < dimensions; y++) {
 				Rectangle rect = new Rectangle(x * scale, y * scale, scale, scale);
 				rect.setStroke(Color.BLACK);
-				if (islandMap[x][y])
-					rect.setFill(Color.GREEN);
-				else
-					rect.setFill(Color.PALETURQUOISE);
+				rect.setFill(Color.GREEN);
 				root.getChildren().add(rect);
 			}
 		}
 	}
+
+	void restart() {
+		classStage.close();
+		Stage mapStage = new Stage();
+		startGame(mapStage);
+	}
 	
-	
+	public void gg() {
+		if (oceanMap.checkW() == true) {
+			Object[] options = {"Quit","Retry"};
+			Component frame = null;
+			int result = JOptionPane.showOptionDialog(frame,  "You Won!", "Winner Diaglog Message",JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,options, frame);
+			if (result == 0) System.exit(0);
+			if (result == 1) restart(); 
+	}
+		if (oceanMap.checkL() == false) {
+			Object[] options = {"Quit","Retry"};
+			Component frame = null;
+			int result = JOptionPane.showOptionDialog(frame,  "You lost!", "Loser Diaglog Message",JOptionPane.YES_NO_CANCEL_OPTION,JOptionPane.QUESTION_MESSAGE,null,options, frame);
+			if (result == 0) System.exit(0); 
+			if (result == 1) restart(); 
+		} 
+	}
 
 	public static void main(String[] args) {
 		launch(args);
