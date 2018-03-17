@@ -78,7 +78,7 @@ public class DoubleSpeed implements Observer, FactoryInterface {
 			}
 		}
 	}
-	@Override
+	
 	public void create(OceanMap oceanMap) {
 		this.oceanMap = oceanMap;
 		currentLocation = oceanMap.getDoubleSpeed();

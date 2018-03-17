@@ -20,7 +20,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-// import java.util.ArrayList;
 
 public class OceanExplorer extends Application {
 	
@@ -58,6 +57,7 @@ public class OceanExplorer extends Application {
 		ship = (Ship) pirateShipFactory.getPirateShip("PlayerShip");
 		pirateShips = (PirateShips) pirateShipFactory.getPirateShip("PirateShip");
 		doubleSpeed = (DoubleSpeed) pirateShipFactory.getPirateShip("FastPirateShip");
+		shark = (LittleShark) pirateShipFactory.getPirateShip("Shark");
 		
 		//ship = new Ship(oceanMap);
 		//pirateShips = new PirateShips(oceanMap);

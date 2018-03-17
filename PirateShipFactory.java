@@ -1,5 +1,3 @@
-
-
 public class PirateShipFactory {
 	public FactoryInterface getPirateShip(String pirateShipType) {
 		OceanMap oceanMap = OceanMap.getOceanMapInstance();
@@ -15,6 +13,9 @@ public class PirateShipFactory {
 		}
 		if (pirateShipType.equals("PlayerShip")) {
 			return new Ship(oceanMap);
+		}
+		if (pirateShipType.equals("Shark")) {
+			return new LittleShark(oceanMap);
 		}
 		return null;
 	}
