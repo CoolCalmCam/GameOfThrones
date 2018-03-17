@@ -46,17 +46,23 @@ public class OceanExplorer extends Application {
 
 	void startGame(Stage mapStage) {
 		oceanMap = OceanMap.createOceanMapInstance(dimensions, islandCount); // for Singleton
+		
+		PirateShipFactory pirateShipFactory = new PirateShipFactory(); //Factory pattern for creating new objects
+		
 		islandImageView = new ImageView[oceanMap.getIslands().length];
 		pirateImageView = new ImageView[oceanMap.getPirates().length];
 		root = new AnchorPane();
 		drawMap();
 		classStage = mapStage;
-
 		
-		ship = new Ship(oceanMap);
-		pirateShips = new PirateShips(oceanMap);
+		ship = (Ship) pirateShipFactory.getPirateShip("PlayerShip");
+		pirateShips = (PirateShips) pirateShipFactory.getPirateShip("PirateShip");
+		doubleSpeed = (DoubleSpeed) pirateShipFactory.getPirateShip("FastPirateShip");
+		
+		//ship = new Ship(oceanMap);
+		//pirateShips = new PirateShips(oceanMap);
 		shark = new LittleShark(oceanMap);
-		doubleSpeed = new DoubleSpeed(oceanMap);
+		//doubleSpeed = new DoubleSpeed(oceanMap);
 		loadShipImage();
 		ship.addObserver(pirateShips);
 		ship.addObserver(shark);
