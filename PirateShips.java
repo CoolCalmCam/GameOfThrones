@@ -4,7 +4,7 @@ import java.awt.Point;
 
 // A list (Point[]) of all PirateShips in the game.
 
-public class PirateShips implements Observer {
+public class PirateShips implements Observer, FactoryInterface {
 	Point[] currentLocation;
 	OceanMap oceanMap;
 	// Point shipLocation;
@@ -19,23 +19,35 @@ public class PirateShips implements Observer {
 	}
 
 	public void goEast(Point p) {
-		if (p.x < oceanMap.getDimensions() && !oceanMap.isOccupied(p.x + 1, p.y))
+		if (p.x < oceanMap.getDimensions() && !oceanMap.isOccupied(p.x + 1, p.y)) {
 			p.x++;
+			oceanMap.getMap()[p.x-1][p.y] = 0;
+    		oceanMap.getMap()[p.x][p.y] = 6;
+		}
 	}
 
 	public void goWest(Point p) {
-		if (p.x > 0 && !oceanMap.isOccupied(p.x - 1, p.y))
+		if (p.x > 0 && !oceanMap.isOccupied(p.x - 1, p.y)) {
 			p.x--;
+			oceanMap.getMap()[p.x+1][p.y] = 0;
+			oceanMap.getMap()[p.x][p.y] = 6;
+		}
 	}
 
 	public void goNorth(Point p) {
-		if (p.y > 0 && !oceanMap.isOccupied(p.x, p.y - 1))
+		if (p.y > 0 && !oceanMap.isOccupied(p.x, p.y - 1)) {
 			p.y--;
+			oceanMap.getMap()[p.x][p.y+1] = 0;
+			oceanMap.getMap()[p.x][p.y] = 6;
+		}
 	}
 
 	public void goSouth(Point p) {
-		if (p.y < oceanMap.getDimensions() && !oceanMap.isOccupied(p.x, p.y + 1))
+		if (p.y < oceanMap.getDimensions() && !oceanMap.isOccupied(p.x, p.y + 1)) {
 			p.y++;
+			oceanMap.getMap()[p.x][p.y-1] = 0;
+			oceanMap.getMap()[p.x][p.y] = 6;
+		}
 	}
 
 	public void update(Observable o, Object arg) {
@@ -73,5 +85,10 @@ public class PirateShips implements Observer {
 			}
 			// System.out.println(); // debug
 		}
+	}
+	
+	public void create(OceanMap oceanMap) {
+		this.oceanMap = oceanMap;
+		currentLocation = oceanMap.getPirates();
 	}
 }

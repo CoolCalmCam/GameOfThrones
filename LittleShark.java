@@ -8,13 +8,11 @@ import java.awt.Point;
 public class LittleShark implements Observer {
 	Point currentLocation;
 	OceanMap oceanMap;
-	// OceanExplorer xs;
 	ImageView s;
 
 	public LittleShark(OceanMap oceanMap) {
 		this.oceanMap = oceanMap;
 		currentLocation = oceanMap.getSharkLocation();
-		// xs = new OceanExplorer();
 	}
 
 	public Point getLittleShark() {
@@ -24,38 +22,41 @@ public class LittleShark implements Observer {
 	public void goEast(Point p) {
 		if (p.x < oceanMap.getDimensions() && !oceanMap.isOccupied(p.x + 1, p.y))
 			p.x++;
+		oceanMap.getMap()[p.x-1][p.y] = 0;
+		oceanMap.getMap()[p.x][p.y] = 3;
 	}
 
 	public void goWest(Point p) {
 		if (p.x > 0 && !oceanMap.isOccupied(p.x - 1, p.y))
 			p.x--;
+		oceanMap.getMap()[p.x+1][p.y] = 0;
+		oceanMap.getMap()[p.x][p.y] = 3;
 	}
 
 	public void goNorth(Point p) {
 		if (p.y > 0 && !oceanMap.isOccupied(p.x, p.y - 1))
 			p.y--;
+		oceanMap.getMap()[p.x][p.y+1] = 0;
+		oceanMap.getMap()[p.x][p.y] = 3;
 	}
 
 	public void goSouth(Point p) {
 		if (p.y < oceanMap.getDimensions() && !oceanMap.isOccupied(p.x, p.y + 1))
 			p.y++;
+		oceanMap.getMap()[p.x][p.y-1] = 0;
+		oceanMap.getMap()[p.x][p.y] = 3;
 	}
 
 	public void update(Observable o, Object arg) {
 		if (o instanceof Ship) {
 			Point shipLocation = ((Ship) o).getShipLocation();
-			// xs.gg();
 			boolean hasMoved = false;
-			//while (true) {
 				if (currentLocation.x < shipLocation.x) {
 					if (currentLocation.x < oceanMap.getDimensions()
 							&& !oceanMap.isOccupied(currentLocation.x + 1, currentLocation.y)) {
 						if (!hasMoved) {
 							goEast(currentLocation);
 							hasMoved = true;
-							// xs.gg();
-							
-							//break;
 						}
 					}
 				}
@@ -64,9 +65,6 @@ public class LittleShark implements Observer {
 						if (!hasMoved) {
 							goWest(currentLocation);
 							hasMoved = true;
-						// xs.gg();
-
-						//break;
 						}
 					}
 				}
@@ -75,8 +73,6 @@ public class LittleShark implements Observer {
 						if (!hasMoved) {
 							goNorth(currentLocation);
 							hasMoved = true;
-							// xs.gg();
-							//break;
 						}
 					}
 				}
@@ -86,9 +82,6 @@ public class LittleShark implements Observer {
 						if (!hasMoved) {
 							goSouth(currentLocation);
 							hasMoved = true;
-							// xs.gg();
-							
-							//break;
 						}
 					}
 				}

@@ -8,6 +8,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import java.awt.Component;
+import java.awt.Point;
 import javax.swing.JOptionPane;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -23,7 +24,6 @@ import javafx.stage.Stage;
 
 public class OceanExplorer extends Application {
 	
-	int[][] islandMap;
 	Pane root;
 	final int dimensions = 20;
 	final int islandCount = 20;
@@ -46,8 +46,6 @@ public class OceanExplorer extends Application {
 
 	void startGame(Stage mapStage) {
 		oceanMap = OceanMap.createOceanMapInstance(dimensions, islandCount); // for Singleton
-		islandMap = oceanMap.getMap(); // Note: We will revisit this in a future class and use an iterator instead of
-										// exposing the underlying representation!!!
 		islandImageView = new ImageView[oceanMap.getIslands().length];
 		pirateImageView = new ImageView[oceanMap.getPirates().length];
 		root = new AnchorPane();
@@ -143,6 +141,7 @@ public class OceanExplorer extends Application {
 
 			public void handle(KeyEvent ke) {
 				switch (ke.getCode()) {
+				
 				case RIGHT:
 					ship.goEast();
 					break;
@@ -158,8 +157,11 @@ public class OceanExplorer extends Application {
 				default:
 					break;
 				}
-				shipImageView.setX(ship.getShipLocation().x * scale);
-				shipImageView.setY(ship.getShipLocation().y * scale);
+				Point p = ship.getShipLocation();
+				shipImageView.setX(p.x * scale);
+				shipImageView.setY(p.y * scale);
+				// islandMap[p.x][p.y] = 0;
+				
 				for (int i = 0; i < oceanMap.getPirates().length; i++) {
 					pirateImageView[i].setX(pirateShips.getShipLocation()[i].x * scale);
 					pirateImageView[i].setY(pirateShips.getShipLocation()[i].y * scale);

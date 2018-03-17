@@ -1,7 +1,7 @@
 import java.awt.Point;
 import java.util.Observable;
 
-public class Ship extends Observable implements Movement {
+public class Ship extends Observable implements Movement, FactoryInterface {
     Point currentLocation;
     OceanMap oceanMap;
     
@@ -17,6 +17,8 @@ public class Ship extends Observable implements Movement {
     public void goEast() {
     	if(currentLocation.x<oceanMap.getDimensions()-1 && !oceanMap.isIsland(currentLocation.x+1, currentLocation.y)){
     		currentLocation.x++;
+    		oceanMap.getMap()[currentLocation.x-1][currentLocation.y] = 0;
+    		oceanMap.getMap()[currentLocation.x][currentLocation.y] = 2;
     		setChanged();
     		notifyObservers(currentLocation);
     	}
@@ -25,6 +27,8 @@ public class Ship extends Observable implements Movement {
     public void goWest() {
     	if(currentLocation.x >0 && !oceanMap.isIsland(currentLocation.x-1, currentLocation.y)){
     		currentLocation.x--;
+    		oceanMap.getMap()[currentLocation.x+1][currentLocation.y] = 0;
+    		oceanMap.getMap()[currentLocation.x][currentLocation.y] = 2;
     		setChanged();
     		notifyObservers(currentLocation);
     	}
@@ -33,6 +37,8 @@ public class Ship extends Observable implements Movement {
     public void goNorth() {
     	if(currentLocation.y>0 && !oceanMap.isIsland(currentLocation.x, currentLocation.y-1)){
     		currentLocation.y--;
+    		oceanMap.getMap()[currentLocation.x][currentLocation.y+1] = 0;
+    		oceanMap.getMap()[currentLocation.x][currentLocation.y] = 2;
     		setChanged();
     		notifyObservers(currentLocation);
     	}
@@ -41,9 +47,16 @@ public class Ship extends Observable implements Movement {
     public void goSouth() {
     	if(currentLocation.y<oceanMap.getDimensions()-1 && !oceanMap.isIsland(currentLocation.x, currentLocation.y+1)){
     		currentLocation.y++;
+    		oceanMap.getMap()[currentLocation.x][currentLocation.y-1] = 0;
+    		oceanMap.getMap()[currentLocation.x][currentLocation.y] = 2;
     		setChanged();
     		notifyObservers(currentLocation);
     	}
     }
-
+    
+    public void create(OceanMap oceanMap) {
+		this.oceanMap = oceanMap;
+    	currentLocation = oceanMap.getShipLocation();
+	}
+    
 }

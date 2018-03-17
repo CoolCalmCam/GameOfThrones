@@ -4,6 +4,7 @@ import javafx.scene.image.ImageView;
 import java.awt.Point;
 
 // Not currently implemented as of right now
+// STILL ISN'T IMPLEMENTED AS OF 2018-03-15 20:04, be careful of this!!
 
 public class Monster implements Observer {
 	Point currentLocation;
